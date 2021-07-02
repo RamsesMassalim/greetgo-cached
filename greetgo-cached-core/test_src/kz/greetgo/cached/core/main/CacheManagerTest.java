@@ -42,14 +42,13 @@ public class CacheManagerTest {
   public void cacheObject__initialWay() {
 
     var testCacheEngine = new TestCacheEngine();
-    var cacheEngines    = CacheEngines.createWithDefault(testCacheEngine);
 
     var fs = new TestParamsFileStorage(Date::new);
 
     ProxyGenerator proxyGenerator = new ProxyGeneratorCglib();
 
     CacheManager cacheManager = CacheManager.builder()
-                                            .cacheEngineSelector(cacheEngines)
+                                            .useDefaultCacheEngine(testCacheEngine)
                                             .paramsFileStorage(fs)
                                             .proxyGenerator(proxyGenerator)
                                             .configFileExtension(".tst-conf")
@@ -116,14 +115,11 @@ public class CacheManagerTest {
   public void initConfigs() {
 
     var testCacheEngine = new TestCacheEngine();
-    var cacheEngines    = CacheEngines.createWithDefault(testCacheEngine);
-
-    ProxyGenerator proxyGenerator = new ProxyGeneratorCglib();
 
     var fs = new TestParamsFileStorage(Date::new);
 
     CacheManager cacheManager = CacheManager.builder()
-                                            .cacheEngineSelector(cacheEngines)
+                                            .useDefaultCacheEngine(testCacheEngine)
                                             .paramsFileStorage(fs)
                                             .proxyGenerator_useCglib()
                                             .configFileExtension(".tst-conf")

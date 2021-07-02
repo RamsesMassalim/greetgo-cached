@@ -13,17 +13,46 @@ import static java.util.Objects.requireNonNull;
 public class CacheManager {
 
   public static class Builder {
-    private CacheEngineSelector cacheEngineSelector;
-    private ParamsFileStorage   paramsFileStorage;
-    private ProxyGenerator      proxyGenerator;
-    private String              configFileExtension       = ".conf";
-    private String              configErrorsFileExtension = ".conf-errors";
-    private long                accessParamsDelayMillis   = 5000;
-    private LongSupplier        currentTimeMillis         = System::currentTimeMillis;
+    private       ParamsFileStorage paramsFileStorage;
+    private       ProxyGenerator    proxyGenerator;
+    private       String            configFileExtension       = ".conf";
+    private       String            configErrorsFileExtension = ".conf-errors";
+    private       long              accessParamsDelayMillis   = 5000;
+    private       LongSupplier      currentTimeMillis         = System::currentTimeMillis;
+    private final CacheEngines      cacheEngines              = new CacheEngines();
 
-    public Builder cacheEngineSelector(CacheEngineSelector cacheEngineSelector) {
-      requireNonNull(cacheEngineSelector, "znoXxxU2tF :: cacheEngineSelector");
-      this.cacheEngineSelector = cacheEngineSelector;
+    public Builder useDefaultCacheEngine_caffeine() {
+      return useCacheEngine_caffeine(null);
+    }
+
+    public Builder useCacheEngine_caffeine(String caffeineEngineName) {
+      Class<?> caffeineClass;
+      try {
+        caffeineClass = Class.forName("kz.greetgo.cached.caffeine.CacheEngineCaffeine");
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException("F4K5UUE5ov :: No required dependency. Please add dependency:" +
+                                     " group=`kz.greetgo.cached`, artifactId=`greetgo-cached-caffeine`", e);
+      }
+
+      CacheEngine cacheEngine;
+
+      try {
+        cacheEngine = (CacheEngine) caffeineClass.getConstructor().newInstance();
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        throw new RuntimeException(e);
+      }
+
+      cacheEngines.put(caffeineEngineName, cacheEngine);
+      return this;
+    }
+
+    public Builder useCacheEngine(String engineName, CacheEngine cacheEngine) {
+      cacheEngines.put(engineName, cacheEngine);
+      return this;
+    }
+
+    public Builder useDefaultCacheEngine(CacheEngine cacheEngine) {
+      cacheEngines.put(null, cacheEngine);
       return this;
     }
 
@@ -94,7 +123,13 @@ public class CacheManager {
 
     public CacheManager build() {
 
-      requireNonNull(cacheEngineSelector, "S8eONYRbO2 :: cacheEngineSelector");
+      try {
+        cacheEngines.select(null);
+      } catch (NoDefaultCacheEngine e) {
+        throw new RuntimeException("8ZS0h91V3q :: No default cache engine."
+                                     + "\n\t\tPlease call `builder.useDefaultCacheEngine...()`", e);
+      }
+
       requireNonNull(paramsFileStorage, "JP3SLs6zUA :: paramsFileStorage");
       requireNonNull(proxyGenerator, "8Zr8tSZ4W1 :: No proxyGenerator."
         + "\n\t\tPlease call `builder.proxyGenerator_useSpring()` if you use Spring Framework,"
@@ -103,7 +138,7 @@ public class CacheManager {
       requireNonNull(configErrorsFileExtension, "p03l2sYFP4 :: configErrorsFileExtension");
       requireNonNull(currentTimeMillis, "Pm7g9EtPVy :: currentTimeMillis");
 
-      CacheSrc cacheSrc = new CacheSrc(cacheEngineSelector, paramsFileStorage, proxyGenerator, configFileExtension,
+      CacheSrc cacheSrc = new CacheSrc(cacheEngines, paramsFileStorage, proxyGenerator, configFileExtension,
                                        configErrorsFileExtension, accessParamsDelayMillis, currentTimeMillis);
 
       return new CacheManager(cacheSrc);
