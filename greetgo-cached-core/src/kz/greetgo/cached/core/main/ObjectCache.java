@@ -1,4 +1,4 @@
-package kz.greetgo.cached.core.core;
+package kz.greetgo.cached.core.main;
 
 import kz.greetgo.cached.core.Cached;
 import kz.greetgo.cached.core.util.CoreReflectionUtil;
@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class ObjectCache {
   public final  Object       cachedObject;
-  private final Class<?>     cachingClass;
+  private final Object       cachingObject;
   private final List<Method> cachedMethods;
   private final CacheSrc     cacheSrc;
 
@@ -34,7 +34,7 @@ public class ObjectCache {
   }
 
   private ObjectCache(Object cachingObject, List<Method> cachedMethods, CacheSrc cacheSrc) {
-    this.cachingClass  = cachingObject.getClass();
+    this.cachingObject = cachingObject;
     this.cachedMethods = cachedMethods;
     this.cacheSrc      = cacheSrc;
 
@@ -44,6 +44,8 @@ public class ObjectCache {
                                      " - no less, and no more. Method " + cachedMethod);
       }
     }
+
+    var cachingClass = cachingObject.getClass();
 
     var allMethodsByName = Arrays.stream(cachingClass.getMethods()).collect(groupingBy(Method::getName));
 
@@ -89,7 +91,7 @@ public class ObjectCache {
         var cacheParamsStorage = new CacheParamsStorageBridge(cacheSrc.paramsFileStorage,
                                                               cacheSrc.configFileExtension,
                                                               cacheSrc.configErrorsFileExtension,
-                                                              cachingClass, method);
+                                                              cachingObject.getClass(), method);
 
         CacheSupplier<Object, Object> cacheSupplier = new CacheSupplierImpl<>
           (cacheParamsStorage, cacheEngine, methodAnnotationData, cacheSrc.accessParamsDelayMillis,
@@ -102,7 +104,7 @@ public class ObjectCache {
     }
   }
 
-  public Object intercept(Method method, Object[] args, Object cachingObject) throws Throwable {
+  public Object intercept(Method method, Object[] args) throws Throwable {
 
     var returnedObject = method.invoke(cachingObject, args);
 

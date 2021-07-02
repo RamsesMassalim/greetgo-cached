@@ -7,7 +7,7 @@ import kz.greetgo.cached.core.annotations.CacheParamInt;
 import kz.greetgo.cached.core.annotations.CacheParamIntRepeat;
 import kz.greetgo.cached.core.annotations.CacheParamLong;
 import kz.greetgo.cached.core.annotations.CacheParamLongRepeat;
-import kz.greetgo.cached.core.core.MethodAnnotationData;
+import kz.greetgo.cached.core.main.MethodAnnotationData;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -55,8 +55,8 @@ public class CoreReflectionUtil {
     return new MethodAnnotationData(maximumSize, lifeTimeSec, engineName, Map.copyOf(params));
   }
 
-  private static <T extends Annotation> T getAnnotation(Method method, Class<T> accClass) {
-    throw new RuntimeException("02.07.2021 10:36: Not impl yet: CoreReflectionUtil.getAnnotation");
+  private static <T extends Annotation> T getAnnotation(Method method, Class<T> annClass) {
+    return method.getAnnotation(annClass);
   }
 
 }

@@ -1,4 +1,4 @@
-package kz.greetgo.cached.core.core;
+package kz.greetgo.cached.core.main;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;

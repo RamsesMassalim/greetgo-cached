@@ -1,3 +1,4 @@
 rootProject.name = 'greetgo-cached'
 
 include "greetgo-cached-core"
+include "greetgo-cached-proxy-cglib"

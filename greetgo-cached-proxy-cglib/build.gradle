@@ -1,0 +1,7 @@
+dependencies {
+
+  compile project(":greetgo-cached-core")
+
+  compile "cglib:cglib:3.2.4"
+
+}

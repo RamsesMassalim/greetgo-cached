@@ -1,4 +1,4 @@
-package kz.greetgo.cached.core.core;
+package kz.greetgo.cached.core.main;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

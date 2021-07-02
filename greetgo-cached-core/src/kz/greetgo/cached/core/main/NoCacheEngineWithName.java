@@ -1,4 +1,4 @@
-package kz.greetgo.cached.core.core;
+package kz.greetgo.cached.core.main;
 
 public class NoCacheEngineWithName extends RuntimeException {
   public NoCacheEngineWithName(String cacheEngineName) {

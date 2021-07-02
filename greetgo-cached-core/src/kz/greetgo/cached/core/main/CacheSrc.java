@@ -1,4 +1,4 @@
-package kz.greetgo.cached.core.core;
+package kz.greetgo.cached.core.main;
 
 import kz.greetgo.cached.core.ParamsFileStorage;
 import kz.greetgo.cached.core.util.proxy.ProxyGenerator;
