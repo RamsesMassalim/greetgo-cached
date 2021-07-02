@@ -96,7 +96,9 @@ public class CacheManager {
 
       requireNonNull(cacheEngineSelector, "S8eONYRbO2 :: cacheEngineSelector");
       requireNonNull(paramsFileStorage, "JP3SLs6zUA :: paramsFileStorage");
-      requireNonNull(proxyGenerator, "8Zr8tSZ4W1 :: proxyGenerator");
+      requireNonNull(proxyGenerator, "8Zr8tSZ4W1 :: No proxyGenerator."
+        + "\n\t\tPlease call `builder.proxyGenerator_useSpring()` if you use Spring Framework,"
+        + "\n\t\tor call `builder.proxyGenerator_useCglib()` for using cglib");
       requireNonNull(configFileExtension, "HFeEer3Ai8 :: configFileExtension");
       requireNonNull(configErrorsFileExtension, "p03l2sYFP4 :: configErrorsFileExtension");
       requireNonNull(currentTimeMillis, "Pm7g9EtPVy :: currentTimeMillis");
