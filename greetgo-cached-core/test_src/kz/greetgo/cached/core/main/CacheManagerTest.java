@@ -1,9 +1,7 @@
-package kz.greetgo.cached.core;
+package kz.greetgo.cached.core.main;
 
+import kz.greetgo.cached.core.Cached;
 import kz.greetgo.cached.core.annotations.CacheDescription;
-import kz.greetgo.cached.core.main.CacheEngines;
-import kz.greetgo.cached.core.main.CacheManager;
-import kz.greetgo.cached.core.main.CacheSrc;
 import kz.greetgo.cached.core.test_util.TestCacheEngine;
 import kz.greetgo.cached.core.test_util.TestParamsFileStorage;
 import kz.greetgo.cached.core.util.proxy.ProxyGenerator;
