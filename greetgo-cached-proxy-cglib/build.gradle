@@ -1,7 +1,23 @@
+plugins {
+  id "kz.greetgo.upload-to-maven"
+  id "kz.greetgo.upload-to-gg-repo"
+}
+
 dependencies {
 
   compile project(":greetgo-cached-core")
 
   compile "cglib:cglib:3.2.4"
 
+}
+
+uploadToMavenCentral {
+  description = "Cache manager in greetgo!"
+  url = 'https://github.com/greetgo/greetgo-cached'
+  scm.url = 'https://github.com/greetgo/greetgo-cached.git'
+  developer {
+    id = 'pompei'
+    name = 'Evgeniy Kolpakov'
+    email = 'ekolpakov@greet-go.com'
+  }
 }

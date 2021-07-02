@@ -1,3 +1,8 @@
+plugins {
+  id "kz.greetgo.upload-to-maven"
+  id "kz.greetgo.upload-to-gg-repo"
+}
+
 dependencies {
   compileOnly "org.projectlombok:lombok:$lombokVersion"
   annotationProcessor "org.projectlombok:lombok:$lombokVersion"
@@ -10,4 +15,15 @@ dependencies {
 
   testCompile project(":greetgo-cached-proxy-cglib")
 
+}
+
+uploadToMavenCentral {
+  description = "Cache manager in greetgo!"
+  url = 'https://github.com/greetgo/greetgo-cached'
+  scm.url = 'https://github.com/greetgo/greetgo-cached.git'
+  developer {
+    id = 'pompei'
+    name = 'Evgeniy Kolpakov'
+    email = 'ekolpakov@greet-go.com'
+  }
 }
