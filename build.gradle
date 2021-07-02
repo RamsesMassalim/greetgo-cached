@@ -13,7 +13,7 @@ allprojects {
   sourceCompatibility = JavaVersion.VERSION_11
   targetCompatibility = JavaVersion.VERSION_11
 
-  group = "kz.greetgo.conf"
+  group = "kz.greetgo.cached"
 
   repositories {
     mavenLocal()
