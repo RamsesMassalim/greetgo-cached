@@ -1,0 +1,3 @@
+rootProject.name = 'greetgo-cached'
+
+#include "greetgo.conf"
