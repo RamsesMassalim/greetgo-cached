@@ -6,7 +6,7 @@ public class DummyTest {
 
   @Test
   public void name() {
-    new Dummy().print();
+
   }
 
 }
