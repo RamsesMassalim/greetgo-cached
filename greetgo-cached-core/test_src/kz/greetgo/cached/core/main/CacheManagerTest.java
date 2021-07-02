@@ -48,11 +48,16 @@ public class CacheManagerTest {
 
     ProxyGenerator proxyGenerator = new ProxyGeneratorCglib();
 
-    CacheSrc cacheSrc = new CacheSrc(cacheEngines, fs, proxyGenerator,
-                                     ".tst-conf", ".tst-conf-errors",
-                                     100, System::currentTimeMillis);
-
-    CacheManager cacheManager = new CacheManager(cacheSrc);
+    CacheManager cacheManager = CacheManager.builder()
+                                            .cacheEngineSelector(cacheEngines)
+                                            .paramsFileStorage(fs)
+                                            .proxyGenerator(proxyGenerator)
+                                            .configFileExtension(".tst-conf")
+                                            .configErrorsFileExtension(".tst-conf-errors")
+                                            .accessParamsDelayMillis(100)
+                                            .currentTimeMillis(System::currentTimeMillis)
+                                            .build();
+    ;
 
     TestObject testObject = new TestObject();
     testObject.top.set("one");
@@ -117,11 +122,15 @@ public class CacheManagerTest {
 
     var fs = new TestParamsFileStorage(Date::new);
 
-    CacheSrc cacheSrc = new CacheSrc(cacheEngines, fs, proxyGenerator,
-                                     ".tst-conf", ".tst-conf-errors",
-                                     100, System::currentTimeMillis);
-
-    CacheManager cacheManager = new CacheManager(cacheSrc);
+    CacheManager cacheManager = CacheManager.builder()
+                                            .cacheEngineSelector(cacheEngines)
+                                            .paramsFileStorage(fs)
+                                            .proxyGenerator_useCglib()
+                                            .configFileExtension(".tst-conf")
+                                            .configErrorsFileExtension(".tst-conf-errors")
+                                            .accessParamsDelayMillis(100)
+                                            .currentTimeMillis(System::currentTimeMillis)
+                                            .build();
 
     TestObject testObject = new TestObject();
     testObject.top.set("one");
@@ -153,5 +162,10 @@ public class CacheManagerTest {
     assertThat(content.text).contains("doThisOperation__value=");
     assertThat(content.text).contains("doThisOperation__value2=");
     assertThat(content.text).contains("doThisOperation__url=");
+  }
+
+  @Test
+  public void proxyGenerator_useCglib() {
+    CacheManager.builder().proxyGenerator_useCglib();
   }
 }

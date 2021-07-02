@@ -2,4 +2,5 @@ rootProject.name = 'greetgo-cached'
 
 include "greetgo-cached-core"
 include "greetgo-cached-proxy-cglib"
+include "greetgo-cached-proxy-spring"
 include "greetgo-cached-zookeeper"
