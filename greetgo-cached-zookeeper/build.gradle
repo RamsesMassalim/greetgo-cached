@@ -1,0 +1,12 @@
+dependencies {
+  compile project(":greetgo-cached-core")
+
+  compileOnly "org.projectlombok:lombok:$lombokVersion"
+  annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+  testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+  testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+  compileOnly "org.apache.curator:curator-recipes:$zooCuratorRecipesVersion"
+  testCompile "org.apache.curator:curator-recipes:$zooCuratorRecipesVersion"
+}

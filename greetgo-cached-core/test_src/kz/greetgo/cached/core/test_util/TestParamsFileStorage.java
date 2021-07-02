@@ -1,6 +1,6 @@
 package kz.greetgo.cached.core.test_util;
 
-import kz.greetgo.cached.core.ParamsFileStorage;
+import kz.greetgo.cached.core.file_storage.ParamsFileStorage;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

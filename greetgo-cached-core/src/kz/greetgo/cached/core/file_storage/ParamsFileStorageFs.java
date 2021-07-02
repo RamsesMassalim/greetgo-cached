@@ -1,4 +1,4 @@
-package kz.greetgo.cached.core;
+package kz.greetgo.cached.core.file_storage;
 
 import lombok.NonNull;
 

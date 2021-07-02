@@ -1,6 +1,6 @@
 package kz.greetgo.cached.core.main;
 
-import kz.greetgo.cached.core.ParamsFileStorage;
+import kz.greetgo.cached.core.file_storage.ParamsFileStorage;
 import kz.greetgo.cached.core.util.proxy.ProxyGenerator;
 
 import java.util.function.LongSupplier;
