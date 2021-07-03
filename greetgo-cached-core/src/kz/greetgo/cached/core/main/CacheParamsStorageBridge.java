@@ -21,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 import static java.util.Objects.requireNonNullElseGet;
 import static java.util.stream.Collectors.toMap;
+import static kz.greetgo.cached.core.util.CoreReflectionUtil.extractFirstSubType;
 import static kz.greetgo.cached.core.util.ReadUtil.toLineList;
 
 public class CacheParamsStorageBridge implements CacheParamsStorage {
@@ -231,6 +232,8 @@ public class CacheParamsStorageBridge implements CacheParamsStorage {
       newContent.append("#\n");
       newContent.append("# Class       : ").append(controllerClass.getSimpleName()).append("\n");
       newContent.append("# Method      : ").append(method.getName()).append("\n");
+      newContent.append("#   In  <--   : ").append(method.getGenericParameterTypes()[0]).append("\n");
+      newContent.append("#   Out -->   : ").append(extractFirstSubType(method.getGenericReturnType())).append("\n");
       newContent.append("# Appended at : ").append(nowStr).append("\n");
       newContent.append("#\n");
       var cacheDescription = method.getAnnotation(CacheDescription.class);

@@ -1,9 +1,11 @@
 package kz.greetgo.cached.core.main;
 
 import kz.greetgo.cached.core.file_storage.ParamsFileStorage;
+import kz.greetgo.cached.core.file_storage.ParamsFileStorageFs;
 import kz.greetgo.cached.core.util.proxy.ProxyGenerator;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongSupplier;
@@ -59,6 +61,12 @@ public class CacheManager {
     public Builder paramsFileStorage(ParamsFileStorage paramsFileStorage) {
       requireNonNull(paramsFileStorage, "49ab4pBKjS :: paramsFileStorage");
       this.paramsFileStorage = paramsFileStorage;
+      return this;
+    }
+
+    public Builder paramsInDir(Path paramsFileDir) {
+      requireNonNull(paramsFileDir, "o0yCrEQ62Y :: paramsFileDir");
+      this.paramsFileStorage = new ParamsFileStorageFs(paramsFileDir);
       return this;
     }
 
@@ -130,7 +138,8 @@ public class CacheManager {
                                      + "\n\t\tPlease call `builder.useDefaultCacheEngine...()`", e);
       }
 
-      requireNonNull(paramsFileStorage, "JP3SLs6zUA :: paramsFileStorage");
+      requireNonNull(paramsFileStorage, "JP3SLs6zUA :: No paramsFileStorage." +
+        "\n\t\tPlease call `builder.paramsFileStorage(pfs)` or `builder.paramsInDir(dir)`");
       requireNonNull(proxyGenerator, "8Zr8tSZ4W1 :: No proxyGenerator."
         + "\n\t\tPlease call `builder.proxyGenerator_useSpring()` if you use Spring Framework,"
         + "\n\t\tor call `builder.proxyGenerator_useCglib()` for using cglib");

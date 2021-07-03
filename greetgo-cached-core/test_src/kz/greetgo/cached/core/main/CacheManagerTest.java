@@ -8,6 +8,8 @@ import kz.greetgo.cached.core.util.proxy.ProxyGenerator;
 import kz.greetgo.cached.proxy.cglib.ProxyGeneratorCglib;
 import org.testng.annotations.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,7 +58,6 @@ public class CacheManagerTest {
                                             .accessParamsDelayMillis(100)
                                             .currentTimeMillis(System::currentTimeMillis)
                                             .build();
-    ;
 
     TestObject testObject = new TestObject();
     testObject.top.set("one");
@@ -163,5 +164,28 @@ public class CacheManagerTest {
   @Test
   public void proxyGenerator_useCglib() {
     CacheManager.builder().proxyGenerator_useCglib();
+  }
+
+  @Test
+  public void init() {
+    Path dir = Paths.get("build/" + getClass().getSimpleName() + "/params_file_storage");
+
+    var cacheManager = CacheManager.builder()
+                                   .useDefaultCacheEngine(new TestCacheEngine())
+                                   .paramsInDir(dir)
+                                   .proxyGenerator_useCglib()
+                                   .build();
+
+    System.out.println("QM6G6r62W3 :: cacheManager = " + cacheManager);
+
+    TestObject testObject = new TestObject();
+    testObject.top.set("one");
+
+    var cachedTestObject = cacheManager.cacheObject(testObject);
+
+    System.out.println("W1HnxUjo4v :: cachedTestObject = " + cachedTestObject);
+
+    cacheManager.initConfigs();
+
   }
 }

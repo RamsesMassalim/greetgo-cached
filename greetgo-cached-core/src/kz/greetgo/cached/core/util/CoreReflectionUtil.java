@@ -11,8 +11,11 @@ import kz.greetgo.cached.core.main.MethodAnnotationData;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class CoreReflectionUtil {
@@ -59,4 +62,15 @@ public class CoreReflectionUtil {
     return method.getAnnotation(annClass);
   }
 
+  public static Type extractFirstSubType(Type cachedType) {
+    Objects.requireNonNull(cachedType, "Crg3l4kyQL :: cachedType");
+    if (cachedType instanceof Class) {
+      throw new IllegalArgumentException("Cannot extract cached type from Class :: " + cachedType);
+    }
+    if (cachedType instanceof ParameterizedType) {
+      ParameterizedType pt= (ParameterizedType) cachedType;
+      return pt.getActualTypeArguments()[0];
+    }
+    throw new RuntimeException("0m5hgM777c :: Cannot extract cachedType from "+cachedType);
+  }
 }

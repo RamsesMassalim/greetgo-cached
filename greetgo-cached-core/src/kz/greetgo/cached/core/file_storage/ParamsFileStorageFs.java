@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -16,31 +17,22 @@ public class ParamsFileStorageFs implements ParamsFileStorage {
   private final Path rootDir;
 
   public ParamsFileStorageFs(Path rootDir) {
-    try {
-      this.rootDir = rootDir.toRealPath();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    this.rootDir = Objects.requireNonNull(rootDir, "rootDir");
   }
 
   private Path realize(@NonNull String strPath) {
     while (strPath.startsWith("/")) {
       strPath = strPath.substring(1);
     }
-    try {
-      var ret = rootDir.resolve(strPath).toRealPath();
 
-      if (ret.startsWith(rootDir)) {
-        return ret;
-      }
+    var ret = rootDir.resolve(strPath).toAbsolutePath();
 
-      throw new RuntimeException("63q7B6EV19 :: Доступ к пути `" + ret + "` закрыт." +
-                                   " Разрешён доступ только внутри `" + rootDir + "`. path = `" + strPath + "`");
-
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if (ret.startsWith(rootDir.toAbsolutePath())) {
+      return ret;
     }
 
+    throw new RuntimeException("63q7B6EV19 :: Доступ к пути `" + ret + "` закрыт." +
+                                 " Разрешён доступ только внутри `" + rootDir + "`. path = `" + strPath + "`");
   }
 
   @Override
