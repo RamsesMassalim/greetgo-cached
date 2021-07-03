@@ -2,6 +2,7 @@ package kz.greetgo.cached.core.main;
 
 import kz.greetgo.cached.core.Cached;
 import kz.greetgo.cached.core.annotations.CacheDescription;
+import kz.greetgo.cached.core.annotations.CacheGroup;
 import kz.greetgo.cached.core.test_util.TestCacheEngine;
 import kz.greetgo.cached.core.test_util.TestParamsFileStorage;
 import kz.greetgo.cached.core.util.proxy.ProxyGenerator;
@@ -194,14 +195,9 @@ public class CacheManagerTest {
 
     public final AtomicReference<String> top = new AtomicReference<>("top");
 
-    public final AtomicInteger helloIntCallCount = new AtomicInteger(0);
-
     @CacheDescription("Это приветливый тестовый метод\nон возвращает строку\nа принимает число")
     public Cached<String> helloInt(int value) {
-      return () -> {
-        helloIntCallCount.incrementAndGet();
-        return value == 0 ? Optional.empty() : Optional.of("int " + value + " " + top.get());
-      };
+      return () -> value == 0 ? Optional.empty() : Optional.of("int " + value + " " + top.get());
     }
 
     public String helloIntOr(int value, String defaultReturn) {
@@ -259,6 +255,91 @@ public class CacheManagerTest {
     assertThat(resultOf11_2).isEqualTo("int 11 one");
     assertThat(resultOf12_2).isEqualTo("int 12 one");
 
+  }
+
+  public static class TestObject3 {
+
+    public final AtomicReference<String> top = new AtomicReference<>("top");
+
+    @CacheGroup("task_A")
+    public Cached<String> task_A___01(int value) {
+      return () -> Optional.of("A   value=" + value + " top=" + top.get());
+    }
+
+    @CacheGroup({"task_A", "task_B"})
+    public Cached<String> task_AB__02(int value) {
+      return () -> Optional.of("AB  value=" + value + " top=" + top.get());
+    }
+
+    @CacheGroup({"task_B"})
+    public Cached<String> task__B__03(int value) {
+      return () -> Optional.of(" B  value=" + value + " top=" + top.get());
+    }
+
+    @CacheGroup({"task_C"})
+    public Cached<String> task___C_04(int value) {
+      return () -> Optional.of("  C value=" + value + " top=" + top.get());
+    }
+
+  }
+
+  @Test
+  public void invalidateGroup__invalidateCacheGroup() {
+    var testCacheEngine = new TestCacheEngine();
+
+    var fs = new TestParamsFileStorage(Date::new);
+
+    ProxyGenerator proxyGenerator = new ProxyGeneratorCglib();
+
+    CacheManager cacheManager = CacheManager.builder()
+                                            .useDefaultCacheEngine(testCacheEngine)
+                                            .paramsFileStorage(fs)
+                                            .proxyGenerator(proxyGenerator)
+                                            .configFileExtension(".tst-conf")
+                                            .configErrorsFileExtension(".tst-conf-errors")
+                                            .accessParamsDelayMillis(100)
+                                            .currentTimeMillis(System::currentTimeMillis)
+                                            .build();
+
+    TestObject3 testObject = new TestObject3();
+
+
+    var cachedTestObject = cacheManager.cacheObject(testObject);
+
+    testObject.top.set("AAA");
+    assertThat(cachedTestObject.task_A___01(1).orElseThrow()).isEqualTo("A   value=1 top=AAA");
+    assertThat(cachedTestObject.task_AB__02(1).orElseThrow()).isEqualTo("AB  value=1 top=AAA");
+    assertThat(cachedTestObject.task__B__03(1).orElseThrow()).isEqualTo(" B  value=1 top=AAA");
+    assertThat(cachedTestObject.task___C_04(1).orElseThrow()).isEqualTo("  C value=1 top=AAA");
+
+    testObject.top.set("QQQ");
+    assertThat(cachedTestObject.task_A___01(1).orElseThrow()).isEqualTo("A   value=1 top=AAA");
+    assertThat(cachedTestObject.task_AB__02(1).orElseThrow()).isEqualTo("AB  value=1 top=AAA");
+    assertThat(cachedTestObject.task__B__03(1).orElseThrow()).isEqualTo(" B  value=1 top=AAA");
+    assertThat(cachedTestObject.task___C_04(1).orElseThrow()).isEqualTo("  C value=1 top=AAA");
+
+    cacheManager.invalidateGroup("task_A");
+    testObject.top.set("WWW");
+
+    assertThat(cachedTestObject.task_A___01(1).orElseThrow()).isEqualTo("A   value=1 top=WWW");
+    assertThat(cachedTestObject.task_AB__02(1).orElseThrow()).isEqualTo("AB  value=1 top=WWW");
+    assertThat(cachedTestObject.task__B__03(1).orElseThrow()).isEqualTo(" B  value=1 top=AAA");
+    assertThat(cachedTestObject.task___C_04(1).orElseThrow()).isEqualTo("  C value=1 top=AAA");
+
+    testObject.top.set("ZZZ");
+
+    assertThat(cachedTestObject.task_A___01(2).orElseThrow()).isEqualTo("A   value=2 top=ZZZ");
+    assertThat(cachedTestObject.task_AB__02(2).orElseThrow()).isEqualTo("AB  value=2 top=ZZZ");
+    assertThat(cachedTestObject.task__B__03(2).orElseThrow()).isEqualTo(" B  value=2 top=ZZZ");
+    assertThat(cachedTestObject.task___C_04(2).orElseThrow()).isEqualTo("  C value=2 top=ZZZ");
+
+    cacheManager.invalidateGroup("task_B");
+    testObject.top.set("EEE");
+
+    assertThat(cachedTestObject.task_A___01(2).orElseThrow()).isEqualTo("A   value=2 top=ZZZ");
+    assertThat(cachedTestObject.task_AB__02(2).orElseThrow()).isEqualTo("AB  value=2 top=EEE");
+    assertThat(cachedTestObject.task__B__03(2).orElseThrow()).isEqualTo(" B  value=2 top=EEE");
+    assertThat(cachedTestObject.task___C_04(2).orElseThrow()).isEqualTo("  C value=2 top=ZZZ");
 
   }
 
