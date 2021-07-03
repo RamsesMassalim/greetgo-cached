@@ -2,6 +2,7 @@ package kz.greetgo.cached.core.main;
 
 import kz.greetgo.cached.core.Cached;
 import kz.greetgo.cached.core.util.CoreReflectionUtil;
+import kz.greetgo.cached.core.util.proxy.MethodProxyInvoker;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -104,20 +105,19 @@ public class ObjectCache {
     }
   }
 
-  public Object intercept(Method method, Object[] args) throws Throwable {
-
-    var returnedObject = method.invoke(cachingObject, args);
+  public Object intercept(Object proxyObject, Method method, Object[] args,
+                          MethodProxyInvoker methodProxyInvoker) throws Throwable {
 
     if (args.length != 1) {
-      return returnedObject;
+      return methodProxyInvoker.invokeSuper(proxyObject, args);
     }
 
-    if (!(returnedObject instanceof Cached)) {
-      return returnedObject;
+    if (!Cached.class.equals(method.getReturnType())) {
+      return methodProxyInvoker.invokeSuper(proxyObject, args);
     }
 
     //noinspection unchecked
-    Cached<Object> original = (Cached<Object>) returnedObject;
+    Cached<Object> original = (Cached<Object>) method.invoke(cachingObject, args);
 
     CacheSupplier<Object, Object> cacheSupplier = getCacheSupplier(method);
     CoreCache<Object, Object>     cache         = cacheSupplier.get();

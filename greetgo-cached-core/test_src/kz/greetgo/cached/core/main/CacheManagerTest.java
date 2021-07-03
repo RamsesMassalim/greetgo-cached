@@ -188,4 +188,78 @@ public class CacheManagerTest {
     cacheManager.initConfigs();
 
   }
+
+
+  public static class TestObject2 {
+
+    public final AtomicReference<String> top = new AtomicReference<>("top");
+
+    public final AtomicInteger helloIntCallCount = new AtomicInteger(0);
+
+    @CacheDescription("Это приветливый тестовый метод\nон возвращает строку\nа принимает число")
+    public Cached<String> helloInt(int value) {
+      return () -> {
+        helloIntCallCount.incrementAndGet();
+        return value == 0 ? Optional.empty() : Optional.of("int " + value + " " + top.get());
+      };
+    }
+
+    public String helloIntOr(int value, String defaultReturn) {
+      return helloInt(value).orElse(defaultReturn);
+    }
+
+  }
+
+  @Test
+  public void cacheObject__localCallCache() {
+
+    var testCacheEngine = new TestCacheEngine();
+
+    var fs = new TestParamsFileStorage(Date::new);
+
+    ProxyGenerator proxyGenerator = new ProxyGeneratorCglib();
+
+    CacheManager cacheManager = CacheManager.builder()
+                                            .useDefaultCacheEngine(testCacheEngine)
+                                            .paramsFileStorage(fs)
+                                            .proxyGenerator(proxyGenerator)
+                                            .configFileExtension(".tst-conf")
+                                            .configErrorsFileExtension(".tst-conf-errors")
+                                            .accessParamsDelayMillis(100)
+                                            .currentTimeMillis(System::currentTimeMillis)
+                                            .build();
+
+    TestObject2 testObject = new TestObject2();
+    testObject.top.set("one");
+
+    //
+    //
+    //
+    var cachedTestObject = cacheManager.cacheObject(testObject);
+    //
+    //
+    //
+
+    var resultOf11_1 = cachedTestObject.helloIntOr(11, "asd");
+    var resultOf12_1 = cachedTestObject.helloIntOr(12, "dsa");
+
+    assertThat(resultOf11_1).isEqualTo("int 11 one");
+    assertThat(resultOf12_1).isEqualTo("int 12 one");
+
+    testObject.top.set("two");
+
+    var resultOf11_2 = cachedTestObject.helloIntOr(11, "wow");
+    var resultOf12_2 = cachedTestObject.helloIntOr(12, "wow");
+
+    System.out.println("DBp3sZuIM5 :: resultOf11_1 = " + resultOf11_1);
+    System.out.println("DBp3sZuIM5 :: resultOf12_1 = " + resultOf12_1);
+    System.out.println("DBp3sZuIM5 :: resultOf11_2 = " + resultOf11_2);
+    System.out.println("DBp3sZuIM5 :: resultOf12_2 = " + resultOf12_2);
+
+    assertThat(resultOf11_2).isEqualTo("int 11 one");
+    assertThat(resultOf12_2).isEqualTo("int 12 one");
+
+
+  }
+
 }

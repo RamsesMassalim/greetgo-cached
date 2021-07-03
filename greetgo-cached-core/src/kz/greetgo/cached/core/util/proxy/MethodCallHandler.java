@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 public interface MethodCallHandler {
 
-  Object handle(Method method, Object[] args) throws Throwable;
+  Object handle(Object proxyObject,
+                Method method, Object[] args,
+                MethodProxyInvoker methodProxyInvoker) throws Throwable;
 
 }

@@ -19,7 +19,7 @@ public class ProxyGeneratorCglib implements ProxyGenerator {
     enhancer.setCallback(new MethodInterceptor() {
       @Override
       public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-        return methodCallHandler.handle(method, args);
+        return methodCallHandler.handle(obj, method, args, proxy::invokeSuper);
       }
     });
 
