@@ -191,6 +191,6 @@ public class CacheManager {
   }
 
   public void invalidateGroup(String cacheGroup) {
-    throw new RuntimeException("03.07.2021 15:08: Not impl yet: CacheManager.invalidateGroup");
+    cacheMap.values().forEach(x -> x.invalidateGroup(cacheGroup));
   }
 }

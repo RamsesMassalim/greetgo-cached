@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
+import java.util.Set;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -12,6 +13,7 @@ public class MethodAnnotationData {
   public final Long                lifeTimeSec;
   public final String              cacheEngineName;
   public final Map<String, Object> params;
+  public final Set<String>         groups;
 
   public long maximumSizeOr(long defaultMaximumSize) {
     return maximumSize != null ? maximumSize : defaultMaximumSize;

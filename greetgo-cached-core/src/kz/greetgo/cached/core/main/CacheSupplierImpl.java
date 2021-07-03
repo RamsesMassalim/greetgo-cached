@@ -3,6 +3,7 @@ package kz.greetgo.cached.core.main;
 import kz.greetgo.cached.core.util.DoOnce;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -112,5 +113,10 @@ public final class CacheSupplierImpl<In, Out> implements CacheSupplier<In, Out> 
     if (cache != null) {
       cache.close();
     }
+  }
+
+  @Override
+  public Set<String> groups() {
+    return methodAnnotationData.groups;
   }
 }

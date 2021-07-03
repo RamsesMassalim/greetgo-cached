@@ -159,4 +159,10 @@ public class ObjectCache {
                  .forEach(CacheSupplier::initConfig);
   }
 
+  public void invalidateGroup(String cacheGroup) {
+    cacheSupplierMap.values()
+                    .stream()
+                    .filter(x -> x.groups().contains(cacheGroup))
+                    .forEach(x -> x.get().invalidateAll());
+  }
 }

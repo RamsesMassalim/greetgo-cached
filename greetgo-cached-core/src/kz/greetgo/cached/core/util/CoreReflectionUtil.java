@@ -1,6 +1,7 @@
 package kz.greetgo.cached.core.util;
 
 import kz.greetgo.cached.core.annotations.CacheEngineName;
+import kz.greetgo.cached.core.annotations.CacheGroup;
 import kz.greetgo.cached.core.annotations.CacheLifeTimeSec;
 import kz.greetgo.cached.core.annotations.CacheMaximumSize;
 import kz.greetgo.cached.core.annotations.CacheParamInt;
@@ -16,13 +17,14 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 
 public class CoreReflectionUtil {
 
   public static MethodAnnotationData extractMethodAnnotationData(Method method) {
 
-    CacheEngineName  cacheEngineName  = CoreReflectionUtil.getAnnotation(method, CacheEngineName.class);
+    CacheEngineName  cacheEngineName  = getAnnotation(method, CacheEngineName.class);
     CacheMaximumSize cacheMaximumSize = getAnnotation(method, CacheMaximumSize.class);
     CacheLifeTimeSec cacheLifeTimeSec = getAnnotation(method, CacheLifeTimeSec.class);
 
@@ -31,6 +33,8 @@ public class CoreReflectionUtil {
 
     CacheParamInt  cacheParamInt  = getAnnotation(method, CacheParamInt.class);
     CacheParamLong cacheParamLong = getAnnotation(method, CacheParamLong.class);
+
+    CacheGroup cacheGroup = getAnnotation(method, CacheGroup.class);
 
     String engineName  = cacheEngineName == null ? null : cacheEngineName.value();
     Long   maximumSize = cacheMaximumSize == null ? null : cacheMaximumSize.value();
@@ -55,7 +59,9 @@ public class CoreReflectionUtil {
       params.put(cacheParamLong.name(), cacheParamLong.value());
     }
 
-    return new MethodAnnotationData(maximumSize, lifeTimeSec, engineName, Map.copyOf(params));
+    Set<String> cacheGroups = cacheGroup == null ? Set.of() : Set.of(cacheGroup.value());
+
+    return new MethodAnnotationData(maximumSize, lifeTimeSec, engineName, Map.copyOf(params), cacheGroups);
   }
 
   private static <T extends Annotation> T getAnnotation(Method method, Class<T> annClass) {
@@ -68,9 +74,9 @@ public class CoreReflectionUtil {
       throw new IllegalArgumentException("Cannot extract cached type from Class :: " + cachedType);
     }
     if (cachedType instanceof ParameterizedType) {
-      ParameterizedType pt= (ParameterizedType) cachedType;
+      ParameterizedType pt = (ParameterizedType) cachedType;
       return pt.getActualTypeArguments()[0];
     }
-    throw new RuntimeException("0m5hgM777c :: Cannot extract cachedType from "+cachedType);
+    throw new RuntimeException("0m5hgM777c :: Cannot extract cachedType from " + cachedType);
   }
 }
