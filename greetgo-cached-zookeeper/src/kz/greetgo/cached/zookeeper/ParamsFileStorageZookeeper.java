@@ -198,7 +198,7 @@ public class ParamsFileStorageZookeeper implements ParamsFileStorage, AutoClosea
   public Optional<Date> lastModifiedAt(@NonNull String path) {
     try {
 
-      Stat stat = client.get().checkExists().forPath(realPath(path));
+      Stat stat = client().checkExists().forPath(realPath(path));
       if (stat == null) {
         return Optional.empty();
       }
