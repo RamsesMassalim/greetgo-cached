@@ -66,7 +66,7 @@ public class CacheManagerTest {
     //
     //
     //
-    var cachedTestObject = cacheManager.cacheObject(testObject);
+    var cachedTestObject = cacheManager.cacheIt(testObject);
     //
     //
     //
@@ -133,7 +133,7 @@ public class CacheManagerTest {
     TestObject testObject = new TestObject();
     testObject.top.set("one");
 
-    cacheManager.cacheObject(testObject);
+    cacheManager.cacheIt(testObject);
 
     {
       var content = fs.pathContentMap.get("TestObject.tst-conf");
@@ -182,7 +182,7 @@ public class CacheManagerTest {
     TestObject testObject = new TestObject();
     testObject.top.set("one");
 
-    var cachedTestObject = cacheManager.cacheObject(testObject);
+    var cachedTestObject = cacheManager.cacheIt(testObject);
 
     System.out.println("W1HnxUjo4v :: cachedTestObject = " + cachedTestObject);
 
@@ -231,7 +231,7 @@ public class CacheManagerTest {
     //
     //
     //
-    var cachedTestObject = cacheManager.cacheObject(testObject);
+    var cachedTestObject = cacheManager.cacheIt(testObject);
     //
     //
     //
@@ -304,7 +304,7 @@ public class CacheManagerTest {
     TestObject3 testObject = new TestObject3();
 
 
-    var cachedTestObject = cacheManager.cacheObject(testObject);
+    var cachedTestObject = cacheManager.cacheIt(testObject);
 
     testObject.top.set("AAA");
     assertThat(cachedTestObject.task_A___01(1).orElseThrow()).isEqualTo("A   value=1 top=AAA");

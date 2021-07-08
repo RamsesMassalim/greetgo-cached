@@ -167,7 +167,7 @@ public class CacheManager {
   private final AtomicLong                           idNext   = new AtomicLong(1L);
   private final ConcurrentHashMap<Long, ObjectCache> cacheMap = new ConcurrentHashMap<>();
 
-  public <T> T cacheObject(T cachingObject) {
+  public <T> T cacheIt(T cachingObject) {
 
     var objectCache = ObjectCache.create(cachingObject, cacheSrc);
     if (objectCache == null) {
