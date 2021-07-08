@@ -9,9 +9,9 @@ import java.util.Set;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class MethodAnnotationData {
-  public final Long                maximumSize;
-  public final Long                lifeTimeSec;
-  public final String              cacheEngineName;
+  public final Long   maximumSize;
+  public final Long   lifeTimeMillis;
+  public final String cacheEngineName;
   public final Map<String, Object> params;
   public final Set<String>         groups;
 
@@ -19,7 +19,7 @@ public class MethodAnnotationData {
     return maximumSize != null ? maximumSize : defaultMaximumSize;
   }
 
-  public long lifeTimeSecOr(long defaultLifeTimeSec) {
-    return lifeTimeSec != null ? lifeTimeSec : defaultLifeTimeSec;
+  public long lifeTimeMillisOr(long defaultLifeTimeMillis) {
+    return lifeTimeMillis != null ? lifeTimeMillis : defaultLifeTimeMillis;
   }
 }

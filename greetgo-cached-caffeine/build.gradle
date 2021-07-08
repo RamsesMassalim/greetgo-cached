@@ -7,7 +7,8 @@ dependencies {
 
   compile project(":greetgo-cached-core")
 
-  compileOnly "com.github.ben-manes.caffeine:caffeine:2.8.5"
+  compileOnly "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
+  testCompile "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
 
 }
 

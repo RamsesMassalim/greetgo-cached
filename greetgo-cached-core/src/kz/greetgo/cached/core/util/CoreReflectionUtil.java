@@ -2,7 +2,7 @@ package kz.greetgo.cached.core.util;
 
 import kz.greetgo.cached.core.annotations.CacheEngineName;
 import kz.greetgo.cached.core.annotations.CacheGroup;
-import kz.greetgo.cached.core.annotations.CacheLifeTimeSec;
+import kz.greetgo.cached.core.annotations.CacheLifeTimeMillis;
 import kz.greetgo.cached.core.annotations.CacheMaximumSize;
 import kz.greetgo.cached.core.annotations.CacheParamInt;
 import kz.greetgo.cached.core.annotations.CacheParamIntRepeat;
@@ -24,9 +24,9 @@ public class CoreReflectionUtil {
 
   public static MethodAnnotationData extractMethodAnnotationData(Method method) {
 
-    CacheEngineName  cacheEngineName  = getAnnotation(method, CacheEngineName.class);
-    CacheMaximumSize cacheMaximumSize = getAnnotation(method, CacheMaximumSize.class);
-    CacheLifeTimeSec cacheLifeTimeSec = getAnnotation(method, CacheLifeTimeSec.class);
+    CacheEngineName     cacheEngineName     = getAnnotation(method, CacheEngineName.class);
+    CacheMaximumSize    cacheMaximumSize    = getAnnotation(method, CacheMaximumSize.class);
+    CacheLifeTimeMillis cacheLifeTimeMillis = getAnnotation(method, CacheLifeTimeMillis.class);
 
     CacheParamIntRepeat  cacheParamIntRepeat  = getAnnotation(method, CacheParamIntRepeat.class);
     CacheParamLongRepeat cacheParamLongRepeat = getAnnotation(method, CacheParamLongRepeat.class);
@@ -36,9 +36,9 @@ public class CoreReflectionUtil {
 
     CacheGroup cacheGroup = getAnnotation(method, CacheGroup.class);
 
-    String engineName  = cacheEngineName == null ? null : cacheEngineName.value();
-    Long   maximumSize = cacheMaximumSize == null ? null : cacheMaximumSize.value();
-    Long   lifeTimeSec = cacheLifeTimeSec == null ? null : cacheLifeTimeSec.value();
+    String engineName     = cacheEngineName == null ? null : cacheEngineName.value();
+    Long   maximumSize    = cacheMaximumSize == null ? null : cacheMaximumSize.value();
+    Long   lifeTimeMillis = cacheLifeTimeMillis == null ? null : cacheLifeTimeMillis.value();
 
     Map<String, Object> params = new HashMap<>();
 
@@ -61,7 +61,7 @@ public class CoreReflectionUtil {
 
     Set<String> cacheGroups = cacheGroup == null ? Set.of() : Set.of(cacheGroup.value());
 
-    return new MethodAnnotationData(maximumSize, lifeTimeSec, engineName, Map.copyOf(params), cacheGroups);
+    return new MethodAnnotationData(maximumSize, lifeTimeMillis, engineName, Map.copyOf(params), cacheGroups);
   }
 
   private static <T extends Annotation> T getAnnotation(Method method, Class<T> annClass) {

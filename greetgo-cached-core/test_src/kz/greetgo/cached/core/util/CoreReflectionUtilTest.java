@@ -1,7 +1,7 @@
 package kz.greetgo.cached.core.util;
 
 import kz.greetgo.cached.core.annotations.CacheEngineName;
-import kz.greetgo.cached.core.annotations.CacheLifeTimeSec;
+import kz.greetgo.cached.core.annotations.CacheLifeTimeMillis;
 import kz.greetgo.cached.core.annotations.CacheMaximumSize;
 import kz.greetgo.cached.core.annotations.CacheParamInt;
 import kz.greetgo.cached.core.annotations.CacheParamLong;
@@ -16,7 +16,7 @@ public class CoreReflectionUtilTest {
 
     @CacheEngineName("Hello World Engine")
     @CacheMaximumSize(321_009L)
-    @CacheLifeTimeSec(123_876L)
+    @CacheLifeTimeMillis(123_876L)
     @CacheParamInt(name = "param_int_1", value = 76)
     @CacheParamInt(name = "param_int_2", value = 71)
     @CacheParamLong(name = "param_long_1", value = 76000000L)
@@ -38,7 +38,7 @@ public class CoreReflectionUtilTest {
     assertThat(annotationData).isNotNull();
     assertThat(annotationData.cacheEngineName).isEqualTo("Hello World Engine");
     assertThat(annotationData.maximumSize).isEqualTo(321_009L);
-    assertThat(annotationData.lifeTimeSec).isEqualTo(123_876L);
+    assertThat(annotationData.lifeTimeMillis).isEqualTo(123_876L);
     assertThat(annotationData.params).contains(entry("param_int_1", 76));
     assertThat(annotationData.params).contains(entry("param_int_2", 71));
     assertThat(annotationData.params).contains(entry("param_long_1", 76000000L));
@@ -58,7 +58,7 @@ public class CoreReflectionUtilTest {
     assertThat(annotationData).isNotNull();
     assertThat(annotationData.cacheEngineName).isNull();
     assertThat(annotationData.maximumSize).isNull();
-    assertThat(annotationData.lifeTimeSec).isNull();
+    assertThat(annotationData.lifeTimeMillis).isNull();
     assertThat(annotationData.params).isEmpty();
 
   }

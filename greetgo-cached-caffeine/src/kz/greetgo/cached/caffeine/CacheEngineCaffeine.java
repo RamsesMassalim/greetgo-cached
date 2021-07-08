@@ -18,9 +18,9 @@ import static kz.greetgo.cached.core.util.ReadUtil.readLong;
 
 public class CacheEngineCaffeine implements CacheEngine {
 
-  private static final String LIFE_TIME_SEC = "lifeTimeSec";
+  static final String LIFE_TIME_MILLIS = "lifeTimeMillis";
 
-  private static final String MAXIMUM_SIZE = "maximumSize";
+  static final String MAXIMUM_SIZE = "maximumSize";
 
   @Override
   public List<CacheParamDefinition> paramList(MethodAnnotationData methodAnnotationData) {
@@ -28,8 +28,8 @@ public class CacheEngineCaffeine implements CacheEngine {
       CacheParamDefinitionLong.of(MAXIMUM_SIZE, "Максимальный размер элементов в кэше",
                                   methodAnnotationData.maximumSizeOr(1000))
       ,
-      CacheParamDefinitionLong.of(LIFE_TIME_SEC, "Время жизни одного элемента в кэше в секундах",
-                                  methodAnnotationData.lifeTimeSecOr(3))
+      CacheParamDefinitionLong.of(LIFE_TIME_MILLIS, "Время жизни одного элемента в кэше в секундах",
+                                  methodAnnotationData.lifeTimeMillisOr(1000))
     );
   }
 
@@ -42,11 +42,11 @@ public class CacheEngineCaffeine implements CacheEngine {
       return new CoreCacheEmpty<>(cacheParams);
     }
 
-    var lifeTimeSec = readLong(LIFE_TIME_SEC, cacheParams);
+    var lifeTimeMillis = readLong(LIFE_TIME_MILLIS, cacheParams);
 
     Cache<In, Out> cache = Caffeine.newBuilder()
                                    .maximumSize(maximumSize)
-                                   .refreshAfterWrite(lifeTimeSec, TimeUnit.SECONDS)
+                                   .expireAfterWrite(lifeTimeMillis, TimeUnit.MILLISECONDS)
                                    .build();
 
     return new CoreCache<>() {
