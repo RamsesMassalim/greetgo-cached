@@ -24,6 +24,7 @@ public class CacheManager {
     private       LongSupplier      currentTimeMillis         = System::currentTimeMillis;
     private final CacheEngines      cacheEngines              = new CacheEngines();
 
+    @SuppressWarnings("UnusedReturnValue")
     public Builder useDefaultCacheEngine_caffeine() {
       return useCacheEngine_caffeine(null);
     }
@@ -49,6 +50,7 @@ public class CacheManager {
       return this;
     }
 
+    @SuppressWarnings("unused")
     public Builder useCacheEngine(String engineName, CacheEngine cacheEngine) {
       cacheEngines.put(engineName, cacheEngine);
       return this;
@@ -204,6 +206,7 @@ public class CacheManager {
 
   }
 
+  @SuppressWarnings("unused")
   public void invalidateAll() {
     cacheMap.values().forEach(ObjectCache::invalidateAll);
   }
