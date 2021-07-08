@@ -4,6 +4,7 @@ import kz.greetgo.cached.core.file_storage.ParamsFileStorage;
 import kz.greetgo.cached.core.file_storage.ParamsFileStorageFs;
 import kz.greetgo.cached.core.util.proxy.ProxyGenerator;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
@@ -177,8 +178,29 @@ public class CacheManager {
     var id = idNext.getAndIncrement();
     cacheMap.put(id, objectCache);
 
+    Object cachedObject = objectCache.cachedObject;
+
+    {
+      Class<?> current = cachingObject.getClass();
+
+      while (current != null && current != Object.class) {
+
+        for (final Field declaredField : current.getDeclaredFields()) {
+          declaredField.setAccessible(true);
+          try {
+            var fieldValue = declaredField.get(cachingObject);
+            declaredField.set(cachedObject, fieldValue);
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        current = current.getSuperclass();
+      }
+    }
+
     //noinspection unchecked
-    return (T) objectCache.cachedObject;
+    return (T) cachedObject;
 
   }
 
