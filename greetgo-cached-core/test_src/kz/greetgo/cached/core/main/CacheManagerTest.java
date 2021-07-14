@@ -343,4 +343,49 @@ public class CacheManagerTest {
 
   }
 
+  public static class TestObject4 {
+
+    public final AtomicReference<String> top = new AtomicReference<>("top");
+
+    public Cached<String> task2(int intValue, String strValue) {
+      return () -> Optional.of("Task2 int=" + intValue + " str=" + strValue + ", top=" + top.get());
+    }
+  }
+
+  @Test
+  public void cacheIt__manyArguments() {
+    var testCacheEngine = new TestCacheEngine();
+
+    var fs = new TestParamsFileStorage(Date::new);
+
+    ProxyGenerator proxyGenerator = new ProxyGeneratorCglib();
+
+    CacheManager cacheManager = CacheManager.builder()
+                                            .useDefaultCacheEngine(testCacheEngine)
+                                            .paramsFileStorage(fs)
+                                            .proxyGenerator(proxyGenerator)
+                                            .configFileExtension(".tst-conf")
+                                            .configErrorsFileExtension(".tst-conf-errors")
+                                            .accessParamsDelayMillis(100)
+                                            .currentTimeMillis(System::currentTimeMillis)
+                                            .build();
+
+    TestObject4 testObject = new TestObject4();
+
+
+    var cachedTestObject = cacheManager.cacheIt(testObject);
+
+    testObject.top.set("AAA");
+    assertThat(cachedTestObject.task2(123, "wow").orElseThrow()).isEqualTo("Task2 int=123 str=wow top=AAA");
+    assertThat(cachedTestObject.task2(321, "asd").orElseThrow()).isEqualTo("Task2 int=321 str=asd top=AAA");
+
+    testObject.top.set("BBB");
+    assertThat(cachedTestObject.task2(123, "wow").orElseThrow()).isEqualTo("Task2 int=123 str=wow top=AAA");
+    assertThat(cachedTestObject.task2(321, "asd").orElseThrow()).isEqualTo("Task2 int=321 str=asd top=AAA");
+
+    assertThat(cachedTestObject.task2(777, "asd").orElseThrow()).isEqualTo("Task2 int=777 str=asd top=BBB");
+    assertThat(cachedTestObject.task2(321, "wow").orElseThrow()).isEqualTo("Task2 int=321 str=wow top=BBB");
+
+  }
+
 }
