@@ -348,7 +348,7 @@ public class CacheManagerTest {
     public final AtomicReference<String> top = new AtomicReference<>("top");
 
     public Cached<String> task2(int intValue, String strValue) {
-      return () -> Optional.of("Task2 int=" + intValue + " str=" + strValue + ", top=" + top.get());
+      return () -> Optional.of("Task2 int=" + intValue + " str=" + strValue + " top=" + top.get());
     }
   }
 
@@ -385,6 +385,11 @@ public class CacheManagerTest {
 
     assertThat(cachedTestObject.task2(777, "asd").orElseThrow()).isEqualTo("Task2 int=777 str=asd top=BBB");
     assertThat(cachedTestObject.task2(321, "wow").orElseThrow()).isEqualTo("Task2 int=321 str=wow top=BBB");
+
+
+    assertThat(cachedTestObject.task2(17, null).orElseThrow()).isEqualTo("Task2 int=17 str=null top=BBB");
+    testObject.top.set("CCC");
+    assertThat(cachedTestObject.task2(17, null).orElseThrow()).isEqualTo("Task2 int=17 str=null top=BBB");
 
   }
 

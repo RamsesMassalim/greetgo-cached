@@ -5,7 +5,9 @@ import kz.greetgo.cached.core.util.CoreReflectionUtil;
 import kz.greetgo.cached.core.util.proxy.MethodProxyInvoker;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,9 +42,9 @@ public class ObjectCache {
     this.cacheSrc      = cacheSrc;
 
     for (final Method cachedMethod : cachedMethods) {
-      if (cachedMethod.getParameterCount() != 1) {
-        throw new RuntimeException("FiDkh8iqr5 :: Caching method can have only one argument" +
-                                     " - no less, and no more. Method " + cachedMethod);
+      if (cachedMethod.getParameterCount() == 0) {
+        throw new RuntimeException("FiDkh8iqr5 :: Caching method must have one or more arguments." +
+                                     " Method " + cachedMethod);
       }
     }
 
@@ -108,7 +110,7 @@ public class ObjectCache {
   public Object intercept(Object proxyObject, Method method, Object[] args,
                           MethodProxyInvoker methodProxyInvoker) throws Throwable {
 
-    if (args.length != 1) {
+    if (args.length == 0) {
       return methodProxyInvoker.invokeSuper(proxyObject, args);
     }
 
@@ -126,10 +128,13 @@ public class ObjectCache {
       return original;
     }
 
+    var argList = new ArrayList<>();
+    Collections.addAll(argList, args);
+
     return new Cached<>() {
       @Override
       public Optional<Object> opt() {
-        return Optional.ofNullable(cache.get(args[0], () -> original.direct().orElse(null)));
+        return Optional.ofNullable(cache.get(argList, () -> original.direct().orElse(null)));
       }
 
       @Override
@@ -144,7 +149,7 @@ public class ObjectCache {
 
       @Override
       public void invalidateOne() {
-        cache.invalidateOn(args[0]);
+        cache.invalidateOn(argList);
       }
     };
   }
