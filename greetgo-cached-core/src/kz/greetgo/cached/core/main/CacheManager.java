@@ -163,7 +163,7 @@ public class CacheManager {
 
   private final CacheSrc cacheSrc;
 
-  private CacheManager(CacheSrc cacheSrc) {
+  public CacheManager(CacheSrc cacheSrc) {
     this.cacheSrc = cacheSrc;
   }
 

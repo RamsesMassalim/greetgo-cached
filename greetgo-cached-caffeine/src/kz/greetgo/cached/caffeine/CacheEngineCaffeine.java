@@ -42,7 +42,7 @@ public class CacheEngineCaffeine implements CacheEngine {
       return new CoreCacheEmpty<>(cacheParams);
     }
 
-    var lifeTimeMillis = readLong(LIFE_TIME_MILLIS, cacheParams);
+    long lifeTimeMillis = readLong(LIFE_TIME_MILLIS, cacheParams);
 
     Cache<In, Out> cache = Caffeine.newBuilder()
                                    .maximumSize(maximumSize)
