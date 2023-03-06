@@ -67,7 +67,11 @@ public class CacheEngineCaffeine implements CacheEngine {
 
       @Override
       public void invalidateOn(In in) {
-        cache.invalidate(in);
+        if (in instanceof Iterable) {
+          cache.invalidateAll((Iterable<?>) in);
+        } else {
+          cache.invalidate(in);
+        }
       }
 
       @Override
